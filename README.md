@@ -4,11 +4,12 @@ This project is a React + Vite implementation of the interactive wall calendar c
 ## UI Preview
 
 <div align="center">
-  <img src="./assets/desktop.png" alt="Desktop View" width="600"/>
-  <img src="./assets/mobile.png" alt="Mobile View" width="250"/>
+  <img src="./src/assets/desktop.png" alt="Desktop View" width="600"/>
+  <img src="./src/assets/mobile.png" alt="Mobile View" width="250"/>
 </div>
 
 <p align="center"><i>Desktop vs Mobile responsiveness</i></p>
+
 
 ## Challenge Alignment
 
