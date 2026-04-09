@@ -104,11 +104,11 @@ npm run build
 
 ### Source Code
 
-Public repository link: `Add your GitHub/GitLab repository link here`
+Public repository link: `https://github.com/kanankotwani28/WallCalender.git`
 
 ### Video Demonstration
 
-Required demo link: `Add your Loom/YouTube/video link here`
+Required demo link: `https://youtu.be/Im9Wvn0sbys`
 
 Suggested walkthrough points:
 
@@ -120,7 +120,7 @@ Suggested walkthrough points:
 
 ### Live Demo
 
-Optional deployed link: `Add your Vercel/Netlify/GitHub Pages link here`
+Deployed link: `https://wall-calendert.vercel.app/`
 
 ## Scope Note
 
