@@ -1,5 +1,8 @@
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useState, useCallback, useEffect } from "react";
 import "./WallCalender.css";
+import CalendarGrid from "./CalendarGrid.jsx";
+import NotePopup from "./NotePopup.jsx";
+import NotesPanel from "./NotesPanel.jsx";
 
 const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 const DAYS   = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
@@ -197,44 +200,6 @@ function MonthScene({ month }) {
   return scenes[month] ?? scenes[0];
 }
 
-function NotePopup({ selection, notes, onSave, onClose }) {
-  const { start, end = start } = selection;
-  const keys = getRangeKeys(start, end);
-  const firstKey = keys[0];
-  const [text, setText] = useState(() => notes[firstKey] || "");
-  const ta = useRef(null);
-  const hasExistingNote = keys.some((key) => notes[key]);
-
-  useEffect(() => {
-    setTimeout(() => ta.current?.focus(), 60);
-  }, []);
-
-  const save = () => {
-    onSave(keys, text);
-    onClose();
-  };
-
-  return (
-    <div className="np-backdrop" onClick={onClose}>
-      <div className="np-popup" onClick={e => e.stopPropagation()}>
-        <div className="np-header">
-          <span className="np-date-label">{formatSelectionLabel(start, end)}</span>
-          <button className="np-close" onClick={onClose}>x</button>
-        </div>
-        <div className="np-notebook">
-          {Array(6).fill(0).map((_,i) => <div key={i} className="np-line" />)}
-          <textarea ref={ta} className="np-ta" value={text}
-            onChange={e => setText(e.target.value)} placeholder="Write your event..." rows={6} />
-        </div>
-        <div className="np-footer">
-          <button className="np-save" onClick={save}>Save</button>
-          {hasExistingNote && <button className="np-del" onClick={() => { onSave(keys,""); onClose(); }}>Delete</button>}
-        </div>
-      </div>
-    </div>
-  );
-}
-
 export default function WallCalendar() {
   const today = new Date();
   const [year,  setYear]  = useState(today.getFullYear());
@@ -410,35 +375,16 @@ export default function WallCalendar() {
       </div>
       <div className={`wc-shell${animDir==="left"?" anim-left":animDir==="right"?" anim-right":""}`}>
 
-        <div className="wc-left">
-          <div className="wc-spiral">{Array(16).fill(0).map((_,i)=><div key={i} className="spiral-ring"/>)}</div>
-          <div className="wc-hero"><MonthScene month={month}/></div>
-          <div className="wc-notes">
-            <div className="wc-notes-header">
-              <span className="wc-notes-label">NOTES</span>
-              {!startDate && <span className="wc-notes-hint">click a date to select</span>}
-              {startDate && !endDate && <span className="wc-notes-hint">tap same date to add note</span>}
-              {startDate && endDate && <span className="wc-notes-hint">use Add Event to save this range</span>}
-            </div>
-            <div className="wc-notebook">
-              {groupedNotesThisMonth.length === 0
-                ? Array(7).fill(0).map((_,i)=><div key={i} className="wc-nb-line"/>)
-                : <>
-                    {groupedNotesThisMonth.map(({ key, startDay, endDay, txt }) => {
-                      const dayLabel = startDay === endDay ? `${startDay}` : `${startDay}-${endDay}`;
-                      return(
-                        <div key={key} className="wc-nb-line wc-note-item" onClick={() => setPopup({ start: { y: year, m: month, d: startDay, num: dateNum(year, month, startDay) }, end: { y: year, m: month, d: endDay, num: dateNum(year, month, endDay) } })}>
-                          <span className="wc-note-day">{dayLabel}</span>
-                          <span className="wc-note-text">{txt}</span>
-                        </div>
-                      );
-                    })}
-                    {Array(Math.max(0,7-groupedNotesThisMonth.length)).fill(0).map((_,i)=><div key={`e${i}`} className="wc-nb-line"/>)}
-                  </>
-              }
-            </div>
-          </div>
-        </div>
+        <NotesPanel
+          hero={<MonthScene month={month} />}
+          month={month}
+          groupedNotesThisMonth={groupedNotesThisMonth}
+          startDate={startDate}
+          endDate={endDate}
+          year={year}
+          setPopup={setPopup}
+          dateNum={dateNum}
+        />
 
         <div className="wc-right">
           <div className="wc-topbar">
@@ -459,23 +405,19 @@ export default function WallCalendar() {
           <div className="wc-day-headers">
             {DAYS.map((d,i)=><div key={d} className={`wc-day-header${i>=5?" weekend":""}`}>{d}</div>)}
           </div>
-          <div className="wc-grid">
-            {rows.map((row,ri)=>row.map((d,ci)=>{
-              const key = d ? fmtKey(year,month,d) : null;
-              const noteTxt = key ? notes[key] : null;
-              return(
-                <div key={`${ri}-${ci}`} className={getDayClass(d,ci)}
-                  style={d&&startDate?.num===dateNum(year,month,d)?{background:ACCENT,color:"#fff"}
-                        :d&&endDate?.num===dateNum(year,month,d)?{background:ACCENT,color:"#fff"}:{}}
-                  onClick={()=>d&&handleDayClick(d)}
-                  role={d?"button":undefined} tabIndex={d?0:-1}
-                  onKeyDown={e=>e.key==="Enter"&&d&&handleDayClick(d)}>
-                  <span className="day-num">{d}</span>
-                  {noteTxt && <span className="day-note-preview">{noteTxt}</span>}
-                </div>
-              );
-            }))}
-          </div>
+          <CalendarGrid
+            rows={rows}
+            year={year}
+            month={month}
+            notes={notes}
+            startDate={startDate}
+            endDate={endDate}
+            handleDayClick={handleDayClick}
+            getDayClass={getDayClass}
+            fmtKey={fmtKey}
+            dateNum={dateNum}
+            accent={ACCENT}
+          />
           <div className="wc-holidays">
             {holidaysThisMonth.length>0
               ? holidaysThisMonth.map(({d,h})=><span key={d} className="wc-holiday-badge">{d} - {h}</span>)
@@ -488,7 +430,12 @@ export default function WallCalendar() {
         <NotePopup
           key={`${fmtKey(popup.start.y, popup.start.m, popup.start.d)}-${popup.end ? fmtKey(popup.end.y, popup.end.m, popup.end.d) : "single"}`}
           selection={popup}
-          notes={notes} onSave={handleNoteSave} onClose={()=>setPopup(null)}/>
+          notes={notes}
+          onSave={handleNoteSave}
+          onClose={()=>setPopup(null)}
+          getRangeKeys={getRangeKeys}
+          formatSelectionLabel={formatSelectionLabel}
+        />
       )}
     </div>
   );
