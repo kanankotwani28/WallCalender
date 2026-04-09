@@ -5,8 +5,8 @@ This project is a React + Vite implementation of the interactive wall calendar c
 ## UI Preview
 
 <p align="center">
-  <img src="wall-calender/src/assets/desktop.png" alt="Desktop View" width="600" />
-  <img src="wall-calender/src/assets/mobile.png" alt="Mobile View" width="250" />
+  <img src="https://raw.githubusercontent.com/kanankotwani28/WallCalender/main/wall-calender/src/assets/desktop.png" alt="Desktop View" width="600" />
+  <img src="https://raw.githubusercontent.com/kanankotwani28/WallCalender/main/wall-calender/src/assets/mobile.png" alt="Mobile View" width="250" />
 </p>
 
 <p align="center"><i>Desktop vs Mobile responsiveness</i></p>
