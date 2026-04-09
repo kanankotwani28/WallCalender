@@ -1,16 +1,15 @@
 # Frontend Engineering Challenge: Interactive Calendar Component
 
 This project is a React + Vite implementation of the interactive wall calendar component described in the Frontend Engineering Challenge. The goal was to translate a static wall-calendar inspired concept into a polished, responsive, and usable frontend-only experience.
+
 ## UI Preview
 
 <p align="center">
-<img src="./wall-calendar/src/assets/desktop.png" />
-<img src="./wall-calendar/src/assets/mobile.png" />
+  <img src="wall-calender/src/assets/desktop.png" alt="Desktop View" width="600" />
+  <img src="wall-calender/src/assets/mobile.png" alt="Mobile View" width="250" />
 </p>
 
 <p align="center"><i>Desktop vs Mobile responsiveness</i></p>
-
-
 
 ## Challenge Alignment
 
@@ -130,7 +129,7 @@ Suggested walkthrough points:
 
 ### Live Demo
 
-Optional deployed link: `https://wall-calendert.vercel.app/`
+Deployed link: `https://wall-calendert.vercel.app/`
 
 ## Scope Note
 
